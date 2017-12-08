@@ -1,0 +1,25 @@
+{
+  "name": "jsstring",
+  "version": "0.0.1",
+  "description": "JavaScript string utilities",
+  "main": "jsstring.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasmith79/JSString.git"
+  },
+  "keywords": [
+    "String"
+  ],
+  "author": "jasmith79@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jasmith79/JSString/issues"
+  },
+  "homepage": "https://github.com/jasmith79/JSString#readme"
+}
