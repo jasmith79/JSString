@@ -1,0 +1,2 @@
+# JSString
+JavaScript String Utilities
