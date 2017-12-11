@@ -31,6 +31,7 @@ const run = () => {
   console.assert(toSnakeCase('Foo3Bar') === 'foo_3_bar');
   console.assert(toSnakeCase('fooXML') === 'foo_xml');
   console.assert(toSnakeCase('XMLHTTPRequest') === 'xmlhttp_request');
+  console.assert(toSnakeCase('fooBarBaz', '-') === 'foo-bar-baz');
 
   console.assert(padLeft(6, 'foo') === '   foo');
   console.assert(padLeft(3, '1', '0') === '001');

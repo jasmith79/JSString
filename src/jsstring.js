@@ -77,7 +77,7 @@ export const toPascalCase = str => capFirst(toCamelCase(str));
 
 export const toClassCase = toPascalCase;
 
-export const toSnakeCase = str => {
+export const toSnakeCase = (str, char='_') => {
   const pieces = str.split(camelSplitter).filter(x => x);
   return pieces
     .map((piece, i, arr) => {
@@ -85,7 +85,7 @@ export const toSnakeCase = str => {
         const next = arr[i + 1];
         const prev = arr[i - 1];
         if (!prev) return piece;
-        if (!isUpper(prev) || (next && !isUpper(next))) return `_${piece}`;
+        if (!isUpper(prev) || (next && !isUpper(next))) return char + piece;
       }
       return piece;
     })
