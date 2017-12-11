@@ -6,7 +6,8 @@ import {
   toSnakeCase,
   padLeft,
   padRight,
-  sprintf
+  sprintf,
+  random,
 } from '../src/jsstring.js';
 
 const run = () => {

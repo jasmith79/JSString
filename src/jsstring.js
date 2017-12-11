@@ -13,6 +13,44 @@ const camelSplitter = /([A-Z0-9])/;
 const firstLetter = /^(\w)/;
 const allFirstLetters = /\b(\w)/g;
 const printfMatch = /%([a-zA-Z%])/g;
+
+const alphaNumericRange = [];
+const alphaRange = [];
+const numericRange = [];
+const lowerCaseRange = [];
+const upperCaseRange = [];
+const asciiPrintableRange = [];
+
+for (let i = 32; i < 127; ++i) {
+  asciiPrintableRange.push(i);
+  if (i > 47 && i < 58) {
+    alphaNumericRange.push(i);
+    numericRange.push(i);
+  }
+
+  if (i > 64 && i < 91) {
+    alphaNumericRange.push(i);
+    alphaRange.push(i);
+    upperCaseRange.push(i);
+  }
+
+  if (i > 96 && i < 123) {
+    alphaNumericRange.push(i);
+    alphaRange.push(i);
+    lowerCaseRange.push(i);
+  }
+}
+
+const randomCharacter = range => () => {
+  return String.fromCharCode(range[Math.random() * range.length | 0]);
+};
+
+const randomString = f => (length=32) => {
+  let str = '';
+  for (let i = 0; i < length; ++i) str += f();
+  return str;
+};
+
 const printfFormat = (c, arg) => {
   let x = parseInt(arg, 10);
   switch (c) {
@@ -101,4 +139,15 @@ export const padRight = (n, str, char=' ') => str.length > n ? str : str + char.
 export const sprintf = (str, ...args) => {
   let count = -1;
   return str.replace(printfMatch, m => printfFormat(m[1], args[++count]));
+};
+
+// NOTE: not cryptographically secure. For anything requiring a secure degree of
+// randomness use the browser's/node's crypto implementation.
+export const random = {
+  alphanumeric: randomString(randomCharacter(alphaNumericRange)),
+  ascii: randomString(randomCharacter(asciiPrintableRange)),
+  alpha: randomString(randomCharacter(alphaRange)),
+  numeric: randomString(randomCharacter(numericRange)),
+  upper: randomString(randomCharacter(upperCaseRange)),
+  lower: randomString(randomCharacter(lowerCaseRange))
 };
