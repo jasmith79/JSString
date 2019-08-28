@@ -57,3 +57,5 @@ typings/
 # dotenv environment variables file
 .env
 
+# compiled test files
+dist/jsstring.test.*
