@@ -3,66 +3,143 @@ import {
   capFirstAll,
   toCamelCase,
   toPascalCase,
+  toClassCase,
   toSnakeCase,
   padLeft,
   padRight,
   sprintf,
   random,
-} from '../src/jsstring.js';
+} from './jsstring';
 
-const run = () => {
-  console.assert(capFirst(' foo') === ' foo');
-  console.assert(capFirst('foo') === 'Foo');
-  console.assert(capFirst('foo bar') === 'Foo bar');
+describe('capFirst', () => {
+  it('should capitalize the first character of a string', () => {
+    expect(capFirst('foobar foo bar')).toBe('Foobar foo bar');
+  });  
+});
 
-  console.assert(capFirstAll(' foo') === ' Foo');
-  console.assert(capFirstAll('foo') === 'Foo');
-  console.assert(capFirstAll('foo bar') === 'Foo Bar');
-  console.assert(capFirstAll('foobar.baz') === 'Foobar.Baz');
+describe('capFirstAll', () => {
+  it('should capitalize the first character of each word in the string', () => {
+    expect(capFirstAll('foobar')).toBe('Foobar');
+  });
 
-  console.assert(toCamelCase('foo_bar_baz') === 'fooBarBaz');
-  console.assert(toCamelCase('foo_bar_3baz') === 'fooBar3Baz');
-  console.assert(toCamelCase('foo_XML') === 'fooXML');
+  it('should delimit by spaces', () => {
+    expect(capFirstAll('foo bar')).toBe('Foo Bar');
+  });
 
-  console.assert(toPascalCase('foo_bar_baz') === 'FooBarBaz');
-  console.assert(toPascalCase('foo_bar_3baz') === 'FooBar3Baz');
-  console.assert(toPascalCase('foo_XML') === 'FooXML');
+  it('should delimit by commas', () => {
+    expect(capFirstAll('foo,bar')).toBe('Foo,Bar');
+  });
 
-  console.assert(toSnakeCase('FooBarBaz') === 'foo_bar_baz');
-  console.assert(toSnakeCase('Foo3Bar') === 'foo_3_bar');
-  console.assert(toSnakeCase('fooXML') === 'foo_xml');
-  console.assert(toSnakeCase('XMLHTTPRequest') === 'xmlhttp_request');
+  it('should delimit by periods', () => {
+    expect(capFirstAll('foo.bar')).toBe('Foo.Bar');
+    expect(capFirstAll('foo. bar')).toBe('Foo. Bar');
+    expect(capFirstAll('foo.\tbar')).toBe('Foo.\tBar');
+    expect(capFirstAll('foo.\nbar')).toBe('Foo.\nBar');
+    expect(capFirstAll('foo.\rbar')).toBe('Foo.\rBar');
+  });
+});
 
-  console.assert(padLeft(6, 'foo') === '   foo');
-  console.assert(padLeft(3, '1', '0') === '001');
+describe('toCamelCase', () => {
+  it('should turn a snake_case string to camelCase', () => {
+    expect(toCamelCase('foo_bar_baz')).toBe('fooBarBaz');
+    expect(toCamelCase('foo_bar_3baz')).toBe('fooBar3Baz');
+    expect(toCamelCase('foo_XML')).toBe('fooXML');
+  });  
+});
 
-  console.assert(padRight(6, 'foo') === 'foo   ');
-  console.assert(padRight(3, '1', '0') === '100');
+describe('toPascalCase', () => {
+  it('should turn a snake_case or camelCase string to PascalCase', () => {
+    expect(toPascalCase('foo_bar_baz')).toBe('FooBarBaz');
+    expect(toPascalCase('foo_bar_3baz')).toBe('FooBar3Baz');
+    expect(toPascalCase('foo_XML')).toBe('FooXML');
+    expect(toPascalCase('fooBarBaz')).toBe('FooBarBaz');
+    expect(toPascalCase('foo3Bar')).toBe('Foo3Bar');
+    expect(toPascalCase('fooXML')).toBe('FooXML');
+  });  
+});
 
-  console.assert(sprintf('%c%%%s%n', 'f', 'o', 'obar', 3) === 'foobar');
-  console.assert(sprintf('%d%f%b%o%x%X', 2, 3.2, 7, 8, 255, 255) === '23.20b1110o100xff0xFF');
+describe('toClassCase, alias of toPascalCase', () => {
+  expect(toClassCase).toBe(toPascalCase);
+});
 
-  // Truncates to int where relevant
-  console.assert(sprintf('%d%f%b%o%x%X', 2.5, 3.2, 7.12, 8.8, 255, 255) === '23.20b1110o100xff0xFF');
+describe('toSnakeCase', () => {
+  it('should turn a camelCase or PascalCase string to snake_case', () => {
+    expect(toSnakeCase('FooBarBaz')).toBe('foo_bar_baz');
+    expect(toSnakeCase('Foo3Bar')).toBe('foo_3_bar');
+    expect(toSnakeCase('fooXML')).toBe('foo_xml');
+    expect(toSnakeCase('XMLHTTPRequest')).toBe('xmlhttp_request');
+  });  
+});
 
-  console.assert(sprintf('%e', 121100) === '1.211e+5');
-  console.assert(sprintf('%E', 121100) === '1.211E+5');
+describe('padLeft', () => {
+  it('should leftpad a string to length n with copies of a character (defaults to space)', () => {
+    expect(padLeft(6, 'foo')).toBe('   foo');
+    expect(padLeft(3, '1', '0')).toBe('001');
+  });  
+});
 
-  let fail;
-  try {
-    fail = sprintf('%q', 2);
-    console.log('FAILED on %q');
-  } catch (e) {
-    console.assert(e.toString() === 'TypeError: Unrecognized formatting option %q to sprintf');
-  }
+describe('padRight', () => {
+  it('should rightpad a string to length n with copies of a character (defaults to space)', () => {
+    expect(padRight(6, 'foo')).toBe('foo   ');
+    expect(padRight(3, '1', '0')).toBe('100');
+  });  
+});
 
-  try {
-    fail = sprintf('%d', 'foo');
-    console.log('FAILED on non-numeric');
-  } catch (e) {
-    console.assert(e.toString() === 'TypeError: Non numeric argument foo to %d');
-  }
-  console.log('Completed.');
-};
+describe('sprintf', () => {
+  it('should mimic *most* of the functionality of sprintf from c', () => {
+    expect(sprintf('%c%%%s%n', 'f', 'o', 'obar', 3)).toBe('foobar');
+    expect(sprintf('%d%f%b%o%x%X', 2, 3.2, 7, 8, 255, 255)).toBe('23.20b1110o100xff0xFF');
+    expect(sprintf('%e', 121100)).toBe('1.211e+5');
+    expect(sprintf('%E', 121100)).toBe('1.211E+5');
+    
+    // Truncates to int where relevant
+    expect(sprintf('%d%f%b%o%x%X', 2.5, 3.2, 7.12, 8.8, 255, 255)).toBe('23.20b1110o100xff0xFF');
+  });
 
-export default run;
+  it('should throw on unknown option', () => {
+    expect(() => sprintf('%q', 2)).toThrow();
+  });
+
+  it('should throw when a non-number/numeric string is passed to %d or %i', () => {
+    expect(() => sprintf('%d', 'foo')).toThrow();
+    expect(() => sprintf('%i', 'foo')).toThrow();
+  });
+});
+
+describe('random', () => {
+  describe('alphanumeric', () => {
+    it('should generate a random alphanumeric string', () => {
+      expect(random.alphanumeric()).toMatch(/^[a-zA-Z0-9]+$/);
+    });
+  });
+
+  describe('ascii', () => {
+    it('should generate an ascii random string', () => {
+      expect(random.ascii()).toMatch(/^[\w\s:;\$\^,'"\(\)\[\]\{\}=<>&!%\*@#\+-\/\?\.`]+$/);
+    });
+  });
+
+  describe('alpha', () => {
+    it('should generate random string of upper and lower case letters', () => {
+      expect(random.alpha()).toMatch(/^[a-zA-Z]+$/);
+    });
+  });
+
+  describe('numeric', () => {
+    it('should generate a numeric random string', () => {
+      expect(random.numeric()).toMatch(/^[0-9]+$/);
+    });
+  });
+
+  describe('upper', () => {
+    it('should generate a uppercase random string', () => {
+      expect(random.upper()).toMatch(/^[A-Z]+$/);
+    });
+  });
+
+  describe('lower', () => {
+    it('should generate a lowercase random string', () => {
+      expect(random.lower()).toMatch(/^[a-z]+$/);
+    });
+  });  
+});
