@@ -99,7 +99,7 @@ export const capFirstAll = (str) => str.replace(allFirstLetters, matchToUpper);
 export const toCamelCase = (str) => (str.replace(snakeCaseMatcher, m => m.replace(/[\-\_]+/g, '').toUpperCase()));
 export const toPascalCase = (str) => capFirst(toCamelCase(str));
 export const toClassCase = toPascalCase;
-export const toSnakeCase = (str) => {
+export const toSnakeCase = (str, char = '_') => {
     const pieces = str.split(camelSplitter).filter(x => x);
     return pieces
         .map((piece, i, arr) => {
@@ -109,7 +109,7 @@ export const toSnakeCase = (str) => {
             if (!prev)
                 return piece;
             if (!isUpper(prev) || (next && !isUpper(next)))
-                return `_${piece}`;
+                return char + piece;
         }
         return piece;
     })
