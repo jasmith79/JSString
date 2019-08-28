@@ -2,24 +2,45 @@
   "name": "jsstring",
   "version": "0.1.0",
   "description": "JavaScript string utilities",
-  "main": "jsstring.js",
-  "directories": {
-    "test": "test"
-  },
+  "main": "dist/jsstring.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "build": "npm run build:ts && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel dist/jsstring.js -o dist/jsstring.umd.js  --source-maps inline",
+    "build:ts": "tsc --outDir ./dist",
+    "gen-docs": "typedoc --readme README.md --excludeNotExported --ignoreCompilerErrors --exclude '{**/*spec*,**/node_modules/**,**/spec/**}' --out doc ./src"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jasmith79/JSString.git"
   },
   "keywords": [
-    "String"
+    "String",
+    "Utility"
   ],
   "author": "jasmith79@gmail.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jasmith79/JSString/issues"
   },
-  "homepage": "https://github.com/jasmith79/JSString#readme"
+  "homepage": "https://github.com/jasmith79/JSString#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/types": "^7.5.5",
+    "@types/jest": "^24.0.18",
+    "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
+    "eslint": "^6.2.2",
+    "jest": "^24.9.0",
+    "source-map-loader": "^0.2.4",
+    "ts-jest": "^24.0.2",
+    "ts-loader": "^6.0.4",
+    "typedoc": "^0.15.0",
+    "typescript": "^3.5.3",
+    "typescript-eslint": "0.0.1-alpha.0"
+  }
 }
